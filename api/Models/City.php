@@ -12,9 +12,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class City extends Model{
 
+    //The table associated with this model
     protected $table = 'city';
+    //The primary key of the table
     protected $primaryKey = 'city_id';
-
+    //If created_at and updated_at columns are not used
     public $timestamps = false;
 
     public static function getCities(){

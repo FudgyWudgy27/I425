@@ -21,6 +21,22 @@ return function (App $app) {
             //Call the view method defined in the CityController class
             $group->get('/{id}', 'City::view');
         });
+
+        //Route group for housetypes
+        $group->group('/housetypes', function (RouteCollectorProxy $group) {
+            //Call the index method defined in the HouseTypeController class
+            $group->get('', 'HouseType:index');
+            //Call the view method defined in the HouseTypeController class
+            $group->get('/{id}', 'HouseType:view');
+        });
+
+        //Route group for status
+        $group->group('/status', function (RouteCollectorProxy $group) {
+            //Call the index method defined in the HouseTypeController class
+            $group->get('', 'Status:index');
+            //Call the view method defined in the HouseTypeController class
+            $group->get('/{id}', 'Status:view');
+        });
     });
 
     // Handle invalid routes
