@@ -28,6 +28,11 @@ class City extends Model{
     //view specific city by id
     public static function getCityById(int $city_id){
         $city = self::findorFail($city_id);
+        $city->load('');
         return $city;
+    }
+    public function properties()
+    {
+        return $this->hasMany(\CourseProject\Models\Property::class, 'city_id');
     }
 }

@@ -10,10 +10,11 @@ use DI\Container;
 use CourseProject\Controllers\CityController;
 use CourseProject\Controllers\HouseTypeController;
 use CourseProject\Controllers\StatusController;
+use CourseProject\Controllers\PropertyController;
 
 return function(Container $container) {
     //Set a dependency called City
-    $container->set('City', function(){
+    $container->set('City', function() {
         return new CityController();
     });
 
@@ -25,5 +26,9 @@ return function(Container $container) {
     //Set a dependency called Status
     $container->set('Status', function(){
         return new StatusController();
+    });
+
+    $container->set('Property', function() {
+        return new \CourseProject\Controllers\PropertyController();
     });
 };

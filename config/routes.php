@@ -19,7 +19,7 @@ return function (App $app) {
             //Call the index method defined in the CityController class
             $group->get('', 'City:index');
             //Call the view method defined in the CityController class
-            $group->get('/{id}', 'City::view');
+            $group->get('/{id}', 'City:view');
         });
 
         //Route group for housetypes
@@ -37,6 +37,12 @@ return function (App $app) {
             //Call the view method defined in the HouseTypeController class
             $group->get('/{id}', 'Status:view');
         });
+        $group->group('/properties', function (RouteCollectorProxy $group) {
+            $group->get('', 'Property:index');
+            $group->get('/increasing', 'Property:increasing');
+            $group->get('/analytics', 'Property:analytics');
+            $group->get('/{id}', 'Property:view');
+        });
     });
 
     // Handle invalid routes
@@ -44,4 +50,5 @@ return function (App $app) {
         $response->getBody()->write("Page Not Found");
         return $response->withStatus(404);
     });
+
 };

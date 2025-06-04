@@ -20,10 +20,11 @@ class CityController {
         return Helper::withJson($response, $results, 200);
     }
 
-    public function view(Request $request, Response $response, array $args) : Response {
-        $id = $args['$id'];
-        $results = City::getCityById($id);
-
-        return Helper::withJson($response, $results, 200);
+    public function view(Request $request, Response $response, array $args): Response
+    {
+        $id = $args['id'];
+        $city = City::with('properties')->findOrFail($id);
+        $city = City::findOrFail($id);
+        return Helper::withJson($response, $city, 200);
     }
 }

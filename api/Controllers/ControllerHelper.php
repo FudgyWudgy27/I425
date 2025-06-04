@@ -20,4 +20,10 @@ class ControllerHelper {
             ->withHeader('Content-Type', 'application/json')
             ->withStatus($code);
     }
+    public function view(Request $request, Response $response, array $args): Response
+    {
+        $id = $args['id'];
+        $city = City::with('properties')->findOrFail($id); // Eager load the relationship
+        return Helper::withJson($response, $city, 200);
+    }
 }
