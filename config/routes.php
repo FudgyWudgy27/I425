@@ -20,6 +20,7 @@ return function (App $app) {
             $group->get('', 'City:index');
             //Call the view method defined in the CityController class
             $group->get('/{id}', 'City:view');
+            $group->get('/{id}/properties', 'City:getProperties');
         });
 
         //Route group for housetypes
@@ -42,6 +43,9 @@ return function (App $app) {
             $group->get('/increasing', 'Property:increasing');
             $group->get('/analytics', 'Property:analytics');
             $group->get('/{id}', 'Property:view');
+            $group->post('', 'Property:create');
+            $group->put('/{id}', 'Property:update');
+            $group->delete('/{id}', 'Property:delete');
         });
     });
 

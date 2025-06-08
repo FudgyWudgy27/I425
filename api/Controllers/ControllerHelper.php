@@ -3,7 +3,7 @@
  * Author: Allen Fudge
  * Date: 6/2/2025
  * File: ControllerHelper.php
- * Description:
+ * Description: Helper class for controller responses
  */
 
 namespace CourseProject\Controllers;
@@ -11,7 +11,6 @@ namespace CourseProject\Controllers;
 use Psr\Http\Message\ResponseInterface as Response;
 
 class ControllerHelper {
-
     // This method sends a response of data in JSON format along with a status code
     public static function withJson(Response $response, $data, int $code) : Response {
         $payload = json_encode($data);
@@ -20,10 +19,5 @@ class ControllerHelper {
             ->withHeader('Content-Type', 'application/json')
             ->withStatus($code);
     }
-    public function view(Request $request, Response $response, array $args): Response
-    {
-        $id = $args['id'];
-        $city = City::with('properties')->findOrFail($id); // Eager load the relationship
-        return Helper::withJson($response, $city, 200);
-    }
+
 }

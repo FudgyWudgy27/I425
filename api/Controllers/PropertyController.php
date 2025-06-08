@@ -10,7 +10,13 @@ namespace CourseProject\Controllers;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 use CourseProject\Models\Property;
-use CourseProject\Controllers\ControllerHelper as Helper;
+use CourseProject\Controllers\ControllerHelper;
+use Illuminate\Support\Facades\DB;
+use CourseProject\Validation\Validator;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Respect\Validation\Validator as v;
+use Respect\Validation\Exceptions\NestedValidationException;
+
 
 class PropertyController
 {
@@ -31,8 +37,7 @@ class PropertyController
                 ];
             });
 
-        return Helper::withJson($response, $properties, 200);
-
+        return ControllerHelper::withJson($response, $properties, 200);
     }
 
     // Get properties with value increases
@@ -50,7 +55,7 @@ class PropertyController
                 ];
             });
 
-        return Helper::withJson($response, $properties);
+        return ControllerHelper::withJson($response, $properties, 200);
     }
 
     // Get property analytics
@@ -61,7 +66,7 @@ class PropertyController
         $decreasing = Property::withValueDecrease()->count();
         $stable = $totalProperties - $increasing - $decreasing;
 
-        return Helper::withJson($response, [
+        return ControllerHelper::withJson($response, [
             'total_properties' => $totalProperties,
             'value_trends' => [
                 'increasing' => $increasing,
@@ -73,7 +78,7 @@ class PropertyController
                 ->avg(DB::raw('apr_value - feb_value')),
             'average_decrease' => Property::withValueDecrease()
                 ->avg(DB::raw('feb_value - apr_value'))
-        ]);
+        ], 200);
     }
 
     // Get single property with full details
@@ -107,6 +112,117 @@ class PropertyController
             ]
         ];
 
-        return Helper::withJson($response, $responseData);
+        return ControllerHelper::withJson($response, $responseData, 200);
+    }
+    public function create(Request $request, Response $response): Response
+    {
+        $data = $request->getParsedBody();
+
+        try {
+            // Validate input
+            $validator = new Validator();
+            $validator->validatePropertyData($data);
+
+            // Create new property
+            $property = new Property();
+            $property->city_id = $data['city_id'];
+            $property->house_type_id = $data['house_type_id'];
+            $property->status_id = $data['status_id'];
+            $property->feb_value = $data['feb_value'];
+            $property->mar_value = $data['mar_value'];
+            $property->apr_value = $data['apr_value'];
+            $property->save();
+
+            // Return the newly created property with 201 status
+            return $this->view($request, $response, ['id' => $property->property_id])
+                ->withStatus(201);
+
+        } catch (NestedValidationException $e) {
+            return ControllerHelper::withJson($response, [
+                'error' => 'Validation failed',
+                'messages' => $e->getMessages()
+            ], 400);
+        } catch (\Exception $e) {
+            return ControllerHelper::withJson($response, [
+                'error' => 'Server error',
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+// Update an existing property
+    public function update(Request $request, Response $response, array $args): Response
+    {
+        $data = $request->getParsedBody();
+
+        try {
+            // Validate ID and input data
+            $validator = new Validator();
+            $validator->validateId($args['id']);
+            $validator->validatePropertyData($data, false); // false for update (optional fields)
+
+            // Find and update property
+            $property = Property::findOrFail($args['id']);
+            $property->city_id = $data['city_id'] ?? $property->city_id;
+            $property->house_type_id = $data['house_type_id'] ?? $property->house_type_id;
+            $property->status_id = $data['status_id'] ?? $property->status_id;
+            $property->feb_value = $data['feb_value'] ?? $property->feb_value;
+            $property->mar_value = $data['mar_value'] ?? $property->mar_value;
+            $property->apr_value = $data['apr_value'] ?? $property->apr_value;
+            $property->save();
+
+            // Return the updated property
+            return $this->view($request, $response, ['id' => $property->property_id]);
+
+        } catch (ModelNotFoundException $e) {
+            return ControllerHelper::withJson($response, [
+                'error' => 'Property not found',
+                'message' => 'No property found with ID ' . $args['id']
+            ], 404);
+        } catch (NestedValidationException $e) {
+            return ControllerHelper::withJson($response, [
+                'error' => 'Validation failed',
+                'messages' => $e->getMessages()
+            ], 400);
+        } catch (\Exception $e) {
+            return ControllerHelper::withJson($response, [
+                'error' => 'Server error',
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+// Delete a property
+    public function delete(Request $request, Response $response, array $args): Response
+    {
+        try {
+            // Validate ID
+            $validator = new Validator();
+            $validator->validateId($args['id']);
+
+            // Find and delete property
+            $property = Property::findOrFail($args['id']);
+            $property->delete();
+
+            return ControllerHelper::withJson($response, [
+                'message' => 'Property deleted successfully'
+            ], 200); // Explicitly set 200 status code
+
+        } catch (ModelNotFoundException $e) {
+            return ControllerHelper::withJson($response, [
+                'error' => 'Property not found',
+                'message' => 'No property found with ID ' . $args['id']
+            ], 404);
+        } catch (\InvalidArgumentException $e) {
+            return ControllerHelper::withJson($response, [
+                'error' => 'Invalid ID',
+                'message' => $e->getMessage()
+            ], 400);
+        } catch (\Exception $e) {
+            return ControllerHelper::withJson($response, [
+                'error' => 'Server error',
+                'message' => $e->getMessage()
+            ], 500);
+        }
     }
 }

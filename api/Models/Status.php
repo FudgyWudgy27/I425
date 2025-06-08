@@ -29,4 +29,7 @@ Class Status extends Model {
         $status = self::findorFail($status_id);
         return $status;
     }
+    public function houseTypes() {
+        return $this->belongsToMany(HouseType::class, 'house_type_status', 'status_id', 'house_type_id');
+    }
 }

@@ -27,4 +27,7 @@ class HouseType extends Model {
         $housetype = self::findOrFail($house_type_id);
         return $housetype;
     }
+    public function statuses() {
+        return $this->belongsToMany(Status::class, 'house_type_status', 'house_type_id', 'status_id');
+    }
 }

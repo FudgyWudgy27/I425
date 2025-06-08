@@ -27,4 +27,9 @@ class CityController {
         $city = City::findOrFail($id);
         return Helper::withJson($response, $city, 200);
     }
+    public function getProperties(Request $request, Response $response, array $args): Response
+    {
+        $city = City::with('properties')->findOrFail($args['id']);
+        return Helper::withJson($response, $city->properties, 200);
+    }
 }
