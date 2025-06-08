@@ -35,4 +35,14 @@ class City extends Model{
     {
         return $this->hasMany(\CourseProject\Models\Property::class, 'city_id');
     }
+
+    public function realtors(){
+        return $this->belongsToMany(Realtor::class, 'locations_of_realtors', 'city_id', 'realtor_id')
+            ->withPivot('years');
+    }
+
+    //Retrieve the realtors in a city
+    public static function getRealtorsByCity(int $realtor_id){
+        return self::findOrFail($realtor_id)->realtors;
+    }
 }

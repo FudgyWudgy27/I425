@@ -11,6 +11,7 @@ use CourseProject\Controllers\CityController;
 use CourseProject\Controllers\HouseTypeController;
 use CourseProject\Controllers\StatusController;
 use CourseProject\Controllers\PropertyController;
+use CourseProject\Controllers\RealtorController;
 use Respect\Validation\Validator as v;
 
 
@@ -34,6 +35,12 @@ return function(Container $container) {
     $container->set('Property', function() {
         return new \CourseProject\Controllers\PropertyController();
     });
+
+    //Set a dependency called Realtor
+    $container->set('Realtor', function(){
+        return new RealtorController();
+    });
+
     $container->set('validator', function() {
         return new \CourseProject\Validation\Validator();
     });

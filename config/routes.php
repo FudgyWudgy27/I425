@@ -21,6 +21,7 @@ return function (App $app) {
             //Call the view method defined in the CityController class
             $group->get('/{id}', 'City:view');
             $group->get('/{id}/properties', 'City:getProperties');
+            $group->get('/{id}/realtors', 'City:viewRealtorsByCity');
         });
 
         //Route group for housetypes
@@ -38,6 +39,8 @@ return function (App $app) {
             //Call the view method defined in the HouseTypeController class
             $group->get('/{id}', 'Status:view');
         });
+
+        //Route group for properties
         $group->group('/properties', function (RouteCollectorProxy $group) {
             $group->get('', 'Property:index');
             $group->get('/increasing', 'Property:increasing');
@@ -46,6 +49,15 @@ return function (App $app) {
             $group->post('', 'Property:create');
             $group->put('/{id}', 'Property:update');
             $group->delete('/{id}', 'Property:delete');
+        });
+
+        //Route group for realtors
+        $group->group('/realtors', function (RouteCollectorProxy $group) {
+            //Call the index method defined in the HouseTypeController class
+            $group->get('', 'Realtor:index');
+            //Call the view method defined in the HouseTypeController class
+            $group->get('/{id}', 'Realtor:view');
+            $group->get('/{id}/cities', 'Realtor:viewRealtorCities');
         });
     });
 

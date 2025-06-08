@@ -32,4 +32,11 @@ class CityController {
         $city = City::with('properties')->findOrFail($args['id']);
         return Helper::withJson($response, $city->properties, 200);
     }
+
+    //View all realtors of a city
+    public function viewRealtorsByCity(Request $request, Response $response, array $args): Response {
+        $id = $args['id'];
+        $results = City::getRealtorsByCity($id);
+        return Helper::withJson($response, $results, 200);
+    }
 }
