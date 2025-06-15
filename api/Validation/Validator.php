@@ -3,7 +3,7 @@
  * Author: your name
  * Date: 6/8/2025
  * File: Validator.php
- * Description:
+ * Description: Handles validation for different models
  */
 namespace CourseProject\Validation;
 
@@ -12,6 +12,10 @@ use Respect\Validation\Exceptions\NestedValidationException;
 
 class Validator
 {
+    // Store validation errors
+    protected static $errors = [];
+
+    // Validate a numeric ID
     public function validateId($id)
     {
         try {
@@ -22,6 +26,7 @@ class Validator
         }
     }
 
+    // Validate property data (for Property model)
     public function validatePropertyData(array $data, bool $isCreate = true)
     {
         $rules = v::key('city_id', v::intVal()->positive())
@@ -45,5 +50,42 @@ class Validator
         } catch (NestedValidationException $e) {
             throw $e;
         }
+    }
+
+    // Validate user attributes from the request body
+    public static function validateUser($request): bool
+    {
+        $rules = [
+            'name' => v::alnum(' '),
+            'email' => v::email(),
+            'username' => v::notEmpty(),
+            'password' => v::notEmpty(),
+            'role' => v::number()->between(1, 4)
+        ];
+
+        return self::validate($request, $rules);
+    }
+
+    // Generic validation function for request body and given rules
+    public static function validate($request, $rules): bool
+    {
+        $params = $request->getParsedBody();
+        self::$errors = []; // Reset errors
+
+        foreach ($rules as $field => $rule) {
+            try {
+                $rule->assert($params[$field] ?? null);
+            } catch (NestedValidationException $e) {
+                self::$errors[$field] = $e->getMessages();
+            }
+        }
+
+        return empty(self::$errors);
+    }
+
+    // Get validation errors
+    public static function getErrors()
+    {
+        return self::$errors;
     }
 }

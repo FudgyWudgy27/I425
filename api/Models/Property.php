@@ -70,5 +70,19 @@ class Property extends Model
     public function scopeWithValueDecrease($query)
     {
         return $query->whereRaw('apr_value < feb_value');
+
+    }
+    //Search for Property
+    public static function searchProperty($term) {
+        if(is_numeric($term)) {
+            $query = self::where('Value', '>=', $term);
+        } else {
+            $query = self::where('id', 'like', "%$term%")
+                ->orWhere('Status', 'like', "%$term%")
+                ->orWhere('Value', 'like', "%$term%")
+                ->orWhere('City', 'like', "%$term%")
+                ->orWhere('house Type', 'like', "%$term%");
+        }
+        return $query->get();
     }
 }

@@ -113,6 +113,12 @@ class PropertyController
         ];
 
         return ControllerHelper::withJson($response, $responseData, 200);
+        //Get querystring variables from url
+        $params = $request->getQueryParams();
+        $term = array_key_exists('q', $params) ? $params['q'] : "";
+        //Call the model method to get Property
+        $results = ($term) ? Property::searchProperty($term) : Property::getProperty();
+
     }
     public function create(Request $request, Response $response): Response
     {
@@ -225,4 +231,5 @@ class PropertyController
             ], 500);
         }
     }
+
 }

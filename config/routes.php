@@ -13,6 +13,14 @@ use Slim\Routing\RouteCollectorProxy;
 
 
 return function (App $app) {
+    // User route group
+    $app->group('/api/v1/users', function (RouteCollectorProxy $group) {
+        $group->get('', 'User:index');
+        $group->get('/{id}', 'User:view');
+        $group->post('', 'User:create');
+        $group->put('/{id}', 'User:update');
+        $group->delete('/{id}', 'User:delete');
+    });
     $app->group('/api/v1', function(RouteCollectorProxy $group) {
         //Route group for cities
         $group->group('/cities', function (RouteCollectorProxy $group) {
@@ -23,6 +31,7 @@ return function (App $app) {
             $group->get('/{id}/properties', 'City:getProperties');
             $group->get('/{id}/realtors', 'City:viewRealtorsByCity');
         });
+
 
         //Route group for housetypes
         $group->group('/housetypes', function (RouteCollectorProxy $group) {
@@ -66,5 +75,6 @@ return function (App $app) {
         $response->getBody()->write("Page Not Found");
         return $response->withStatus(404);
     });
+
 
 };

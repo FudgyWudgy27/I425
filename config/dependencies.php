@@ -13,6 +13,7 @@ use CourseProject\Controllers\StatusController;
 use CourseProject\Controllers\PropertyController;
 use CourseProject\Controllers\RealtorController;
 use Respect\Validation\Validator as v;
+use CourseProject\Controllers\UserController;
 
 
 
@@ -43,5 +44,9 @@ return function(Container $container) {
 
     $container->set('validator', function() {
         return new \CourseProject\Validation\Validator();
+    });
+    // Set a dependency called "User"
+    $container->set('User', function() {
+        return new UserController();
     });
 };
