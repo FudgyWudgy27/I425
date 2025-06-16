@@ -126,5 +126,15 @@ class UserController {
         $token = Token::generateBearer($user->id);
         $results = ['Status' => 'Login successful', 'Token' => $token];
         return Helper::withJson($response, $results, 200);
+        //Username and password are valid. Generate a JWT.
+        $jwt = User::generateJWT($user->id);
+        $results = [
+            'Status' => 'Login successful',
+            'jwt' => $jwt,
+            'name' => $user-> name,
+            'role' => $user->role
+        ];
+//return the results
+        return Helper::withJson($response, $results, 200);
     }
 }
