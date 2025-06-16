@@ -13,7 +13,8 @@ use Slim\Routing\RouteCollectorProxy;
 use CourseProject\Authentication\{
     MyAuthenticator,
     BasicAuthenticator,
-    BearerAuthenticator
+    BearerAuthenticator,
+JWTAuthenticator
 };
 
 
@@ -78,7 +79,8 @@ return function (App $app) {
     //});
     //})->add(new MyAuthenticator()); //MyAuthentication
     //})->add(new BasicAuthenticator()); // BasicAuthentication
-    })->add(new BearerAuthenticator()); // BearerAuthentication
+    //})->add(new BearerAuthenticator()); // BearerAuthentication
+    })->add(new JWTAuthenticator()); // JWTAuthentication
 
     // Handle invalid routes
     $app->any('{route:.*}', function(Request $request, Response $response) {
