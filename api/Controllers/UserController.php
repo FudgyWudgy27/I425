@@ -137,4 +137,10 @@ class UserController {
 //return the results
         return Helper::withJson($response, $results, 200);
     }
+    public function authJWT(Request $request, Response $response, array $args): Response
+    {
+        // Your JWT logic here
+        $response->getBody()->write("JWT Auth success!");
+        return $response;
+    }
 }
