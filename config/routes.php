@@ -10,6 +10,11 @@ use Slim\App;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Routing\RouteCollectorProxy;
+use CourseProject\Authentication\{
+    MyAuthenticator,
+    BasicAuthenticator,
+    BearerAuthenticator
+};
 
 
 return function (App $app) {
@@ -20,7 +25,9 @@ return function (App $app) {
         $group->post('', 'User:create');
         $group->put('/{id}', 'User:update');
         $group->delete('/{id}', 'User:delete');
+        $group->post('/authBearer', 'User:authBearer');
     });
+
     $app->group('/api/v1', function(RouteCollectorProxy $group) {
         //Route group for cities
         $group->group('/cities', function (RouteCollectorProxy $group) {
@@ -68,7 +75,10 @@ return function (App $app) {
             $group->get('/{id}', 'Realtor:view');
             $group->get('/{id}/cities', 'Realtor:viewRealtorCities');
         });
-    });
+    //});
+    //})->add(new MyAuthenticator()); //MyAuthentication
+    //})->add(new BasicAuthenticator()); // BasicAuthentication
+    })->add(new BearerAuthenticator()); // BearerAuthentication
 
     // Handle invalid routes
     $app->any('{route:.*}', function(Request $request, Response $response) {

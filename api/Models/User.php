@@ -82,4 +82,18 @@ class User extends Model {
         $user = self::findOrFail($request->getAttribute('id'));
         return ($user ? $user->delete() : $user);
     }
+
+    /************* User Authentication and Authorization Methods ************************/
+    //Authenticate a user by username and password
+    public static function authenticateUser($username, $password) {
+        //Retrieve the first record from the database table that matches the username
+        $user =self::where('username', $username)->first();
+        if(!$user) {
+            return false;
+        }
+        //Verify password.
+        return password_verify($password, $user->password) ? $user : false;
+    }
+
+
 }
