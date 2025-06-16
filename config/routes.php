@@ -27,6 +27,7 @@ return function (App $app) {
         $group->put('/{id}', 'User:update');
         $group->delete('/{id}', 'User:delete');
         $group->post('/authBearer', 'User:authBearer');
+        $group->post('/authJWT', 'User:authJWT');
     });
 
     $app->group('/api/v1', function(RouteCollectorProxy $group) {
