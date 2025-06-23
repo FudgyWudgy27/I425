@@ -14,7 +14,7 @@ use CourseProject\Authentication\{
     MyAuthenticator,
     BasicAuthenticator,
     BearerAuthenticator,
-JWTAuthenticator
+    JWTAuthenticator
 };
 
 

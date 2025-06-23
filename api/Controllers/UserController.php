@@ -139,8 +139,26 @@ class UserController {
     }
     public function authJWT(Request $request, Response $response, array $args): Response
     {
-        // Your JWT logic here
-        $response->getBody()->write("JWT Auth success!");
-        return $response;
+        //Retrieve username and password from the request body
+        $params = $request->getParsedBody();
+        $username = $params['username'];
+        $password = $params['password'];
+        //Verify username and password
+        $user = User::authenticateUser($username, $password);
+        if(!$user) {
+            return Helper::withJson($response, ['Status' => 'Login failed.'], 401);
+        }
+
+        //Username and password are valid. Generate a JWT.
+        $jwt = User::generateJWT($user->id);
+        $results = [
+            'Status' => 'Login successful',
+            'jwt' => $jwt,
+            'name' => $user-> name,
+            'role' => $user->role
+        ];
+
+        //return the results
+        return Helper::withJson($response, $results, 200);
     }
 }

@@ -4,7 +4,8 @@
         "slim/psr7": "^1.7",
         "php-di/php-di": "^7.0",
         "illuminate/database": "9.*",
-        "respect/validation": "^2.4"
+        "respect/validation": "^2.4",
+        "firebase/php-jwt": "^6.11"
     },
     "autoload": {
         "psr-4": {
