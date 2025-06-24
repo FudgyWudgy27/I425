@@ -48,6 +48,9 @@ $errorMiddleware->setDefaultErrorHandler($customErrorHandler);
 // Require dependencies
 (require __DIR__ . '/dependencies.php')($container);
 
+// Register middleware (including CORS)
+(require __DIR__ . '/middleware.php')($app);
+
 // Register routes
 (require __DIR__ . '/routes.php')($app);
 

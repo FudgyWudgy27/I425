@@ -19,6 +19,10 @@ use CourseProject\Authentication\{
 
 
 return function (App $app) {
+    // Handle preflight requests for CORS
+    $app->options('/{routes:.+}', function (Request $request, Response $response) {
+        return $response;
+    });
     // User route group
     $app->group('/api/v1/users', function (RouteCollectorProxy $group) {
         $group->get('', 'User:index');
@@ -77,11 +81,11 @@ return function (App $app) {
             $group->get('/{id}', 'Realtor:view');
             $group->get('/{id}/cities', 'Realtor:viewRealtorCities');
         });
-    //});
+    });
     //})->add(new MyAuthenticator()); //MyAuthentication
     //})->add(new BasicAuthenticator()); // BasicAuthentication
     //})->add(new BearerAuthenticator()); // BearerAuthentication
-    })->add(new JWTAuthenticator()); // JWTAuthentication
+    //})->add(new JWTAuthenticator()); // JWTAuthentication
 
     // Handle invalid routes
     $app->any('{route:.*}', function(Request $request, Response $response) {
