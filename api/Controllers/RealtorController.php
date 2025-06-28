@@ -16,7 +16,14 @@ use CourseProject\Controllers\ControllerHelper as Helper;
 class RealtorController{
     //list all realtors
     public function index(Request $request, Response $response, array $args) : Response {
-        $results = Realtor::getRealtors($request);
+        //$results = Realtor::getRealtors($request);
+        //Get querystring variables from url
+        $params = $request->getQueryParams();
+        $term = array_key_exists('q', $params) ? $params['q'] : "";
+
+        //Call the model method to get realtors. If you need to do the things listed at the top of getRealtors(), then add $request into the ()
+        $results = ($term) ? Realtor::searchRealtors($term) : Realtor::getRealtors();
+
         return Helper::withJson($response, $results, 200);
     }
 

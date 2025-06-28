@@ -16,46 +16,51 @@ class Realtor extends Model {
     public $timestamps = false;
 
     //Retrieve all students
-    public static function getRealtors($request){
-//get the total number of row count
-        $count = self::count();
+    public static function getRealtors(){
+        //If there are issues with getRealtors(), then add $request to inside the (), uncomment the code, and comment out the last two lines
 
-        //Get querystring variables from url
-        $params = $request->getQueryParams();
+////get the total number of row count
+//        $count = self::count();
+//
+//        //Get querystring variables from url
+//        $params = $request->getQueryParams();
+//
+//        //do limit and offset exist?
+//        $limit = array_key_exists('limit', $params) ? (int)$params['limit'] : 10;   //items per page
+//        $offset = array_key_exists('offset', $params) ? (int)$params['offset'] : 0;  //offset of the first item
+//
+//        //pagination
+//        $links = self::getLinks($request, $limit, $offset);
+//
+//        //build query
+//        $query = self::with('cities');  //build the query to get all courses
+//        $query = $query->skip($offset)->take($limit);  //limit the rows
+//
+//        //code for sorting
+//        $sort_key_array = self::getSortKeys($request);
+//
+//        //soft the output by one or more columns
+//        foreach($sort_key_array as $column => $direction){
+//            $query->orderBy($column, $direction);
+//        }
+//
+//        //retrieve the courses
+//        $realtors = $query->get();  //Finally, run the query and get the results
+//
+//        //construct the data for response
+//        $results = [
+//            'totalCount' => $count,
+//            'limit' => $limit,
+//            'offset' => $offset,
+//            'links' => $links,
+//            'sort' => $sort_key_array,
+//            'data' => $realtors
+//        ];
+//
+//        return $results;
 
-        //do limit and offset exist?
-        $limit = array_key_exists('limit', $params) ? (int)$params['limit'] : 10;   //items per page
-        $offset = array_key_exists('offset', $params) ? (int)$params['offset'] : 0;  //offset of the first item
-
-        //pagination
-        $links = self::getLinks($request, $limit, $offset);
-
-        //build query
-        $query = self::with('cities');  //build the query to get all courses
-        $query = $query->skip($offset)->take($limit);  //limit the rows
-
-        //code for sorting
-        $sort_key_array = self::getSortKeys($request);
-
-        //soft the output by one or more columns
-        foreach($sort_key_array as $column => $direction){
-            $query->orderBy($column, $direction);
-        }
-
-        //retrieve the courses
-        $realtors = $query->get();  //Finally, run the query and get the results
-
-        //construct the data for response
-        $results = [
-            'totalCount' => $count,
-            'limit' => $limit,
-            'offset' => $offset,
-            'links' => $links,
-            'sort' => $sort_key_array,
-            'data' => $realtors
-        ];
-
-        return $results;
+        $realtors = self::all();
+        return $realtors;
     }
 
     //View a specific student
@@ -119,5 +124,13 @@ class Realtor extends Model {
         }
 
         return $sort_key_array;
+    }
+
+    public static function searchRealtors($term){
+        $query = self::where('realtor_name', 'LIKE', "%$term%")
+            ->orWhere('phone', 'LIKE', "%$term%")
+            ->orWhere('email', 'LIKE', "%$term%")
+            ->orWhere('state', 'LIKE', "%$term%");
+        return $query->get();
     }
 }
