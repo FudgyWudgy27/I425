@@ -80,6 +80,10 @@ return function (App $app) {
             //Call the view method defined in the HouseTypeController class
             $group->get('/{id}', 'Realtor:view');
             $group->get('/{id}/cities', 'Realtor:viewRealtorCities');
+            $group->post('', 'Realtor:create');
+            $group->put('/{id}', 'Realtor:update');
+            $group->delete('/{id}', 'Realtor:delete');
+
         });
     });
     //})->add(new MyAuthenticator()); //MyAuthentication
